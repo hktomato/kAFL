@@ -86,7 +86,7 @@ class qemu:
         self.cmd += " -serial file:" + self.qemu_serial_log + \
                     " -enable-kvm" \
                     " -m " + str(config.argument_values['mem']) + \
-                    " -nographic -net none" \
+                    " -net none" \
                     " -chardev socket,server,nowait,path=" + self.control_filename + \
                     ",id=kafl_interface" \
                     " -device kafl,chardev=kafl_interface,bitmap_size=" + str(self.bitmap_size) + ",shm0=" + self.binary_filename + \
@@ -456,7 +456,7 @@ class qemu:
         self.process = subprocess.Popen(self.cmd,
                 preexec_fn=os.setpgrp,
                 stdin=subprocess.PIPE,
-                stdout=subprocess.PIPE,
+                #stdout=subprocess.PIPE,
                 stderr=subprocess.STDOUT)
 
         try:
@@ -476,7 +476,8 @@ class qemu:
         if self.config.argument_values['agent']:
             self.__set_agent()
 
-        self.__debug_recv_expect(qemu_protocol.RELEASE + qemu_protocol.PT_TRASHED)
+        # self.__debug_recv_expect(qemu_protocol.RELEASE + qemu_protocol.PT_TRASHED)
+        self.__debug_recv_expect(qemu_protocol.ACQUIRE)
         self.__debug_send(qemu_protocol.RELEASE)
         log_qemu("Stage 1 handshake done [INIT]", self.qemu_id)
 
@@ -487,7 +488,9 @@ class qemu:
         #    ready = select.select([self.control], [], [], 1)
 
         self.handshake_stage_1 = False
-        self.__debug_recv_expect(qemu_protocol.ACQUIRE + qemu_protocol.PT_TRASHED)
+        # self.__debug_recv_expect(qemu_protocol.ACQUIRE + qemu_protocol.PT_TRASHED)
+        self.__debug_recv_expect(qemu_protocol.ACQUIRE)
+        self.__debug_send(qemu_protocol.RELEASE)
         log_qemu("Stage 2 handshake done [READY]", self.qemu_id)
         self.handshake_stage_2 = False
 
