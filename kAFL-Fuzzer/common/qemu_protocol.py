@@ -35,6 +35,8 @@ PT_TRASHED_KASAN = b'N'
 
 ABORT = b'H'
 
+LOCK = b'1'
+
 CMDS = {
     ACQUIRE: "ACQUIRE",
     RELEASE: "RELEASE",

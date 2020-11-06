@@ -171,6 +171,8 @@ int main(int argc, char** argv){
 
     /***** Fuzzer Entrypoint *****/
 
+    /* lock for race condition */
+    kAFL_hypercall(HYPERCALL_KAFL_LOCK, 0);
 
     /* initial fuzzer handshake */
     kAFL_hypercall(HYPERCALL_KAFL_ACQUIRE, 0);
